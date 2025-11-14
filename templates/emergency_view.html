@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Emergency View — {{ public_data.name }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gradient-to-b from-white to-indigo-50 min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-md bg-white rounded-xl shadow p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl font-bold text-indigo-700">{{ public_data.name }}</h2>
+          <p class="text-sm text-gray-500">Emergency medical view — read-only</p>
+        </div>
+        <div class="text-right">
+          <div class="text-sm font-semibold">Blood</div>
+          <div class="text-xl">{{ public_data.blood_group or 'N/A' }}</div>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <h4 class="font-semibold text-gray-700">Allergies</h4>
+        {% if public_data.allergies %}
+          <div class="mt-2 text-red-600 font-medium">{{ public_data.allergies|join(', ') }}</div>
+        {% else %}
+          <div class="mt-2 text-gray-500">None listed</div>
+        {% endif %}
+      </div>
+
+      <div class="mt-4">
+        <h4 class="font-semibold text-gray-700">Medications</h4>
+        {% if public_data.medications %}
+          <ul class="mt-2 list-disc ml-6">
+            {% for m in public_data.medications %}
+              <li>{{ m }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div class="mt-2 text-gray-500">None listed</div>
+        {% endif %}
+      </div>
+
+      <div class="mt-4">
+        <h4 class="font-semibold text-gray-700">Conditions</h4>
+        {% if public_data.conditions %}
+          <ul class="mt-2 list-disc ml-6">
+            {% for c in public_data.conditions %}
+              <li>{{ c }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div class="mt-2 text-gray-500">None listed</div>
+        {% endif %}
+      </div>
+
+      <div class="mt-4">
+        <h4 class="font-semibold text-gray-700">Emergency Contacts</h4>
+        <ul class="mt-2 space-y-2">
+          {% for c in public_data.emergency_contacts %}
+            <li class="flex justify-between items-center">
+              <div>
+                <div class="font-medium">{{ c.name }}</div>
+                <div class="text-xs text-gray-500">{{ c.phone }}</div>
+              </div>
+              <a class="px-3 py-2 bg-indigo-600 text-white rounded" href="tel:{{ c.phone }}">Call</a>
+            </li>
+          {% else %}
+            <li class="text-gray-500">No emergency contacts</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="mt-6 text-sm text-gray-400 text-center">
+        Last updated: — (info is provided by the user)
+      </div>
+    </div>
+  </body>
+</html>

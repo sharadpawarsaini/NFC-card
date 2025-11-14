@@ -1,0 +1,5 @@
+/* Additional dashboard tweaks */
+.card { background: white; border-radius: 12px; box-shadow: 0 8px 24px rgba(15,23,42,0.06); padding: 1rem; }
+.header { font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; }
+.button-primary { background-color: #4F46E5; color: white; padding: 0.5rem 1rem; border-radius: 8px; border: none; cursor: pointer; }
+.button-primary:hover { background-color: #4338CA; }

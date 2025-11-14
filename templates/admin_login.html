@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-6 rounded-xl shadow mt-8">
+    <h2 class="text-2xl font-bold text-center mb-4">Admin Login</h2>
+
+    {% if error %}
+      <p class="text-red-600 text-sm mb-3 text-center">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST" class="space-y-4">
+        <div>
+            <label class="text-sm">Email</label>
+            <input type="email" name="email" class="w-full p-3 border rounded mt-1" placeholder="admin@example.com">
+        </div>
+
+        <div>
+            <label class="text-sm">Password</label>
+            <input type="password" name="password" class="w-full p-3 border rounded mt-1" placeholder="Admin123">
+        </div>
+
+        <button class="w-full py-2 bg-indigo-600 text-white rounded font-semibold">Login</button>
+    </form>
+</div>
+{% endblock %}

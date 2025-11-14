@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <div class="lg:col-span-2 space-y-6">
+    <div class="bg-white rounded-xl shadow p-6 flex items-center space-x-6">
+      <div class="w-24 h-24 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold">
+        {{ user.name[0]|upper if user.name }}
+      </div>
+      <div>
+        <h3 class="text-xl font-semibold">{{ user.name }}</h3>
+        <p class="text-sm text-gray-500">Plan: <span class="text-indigo-600">{{ user.plan }}</span></p>
+        <p class="text-sm mt-1 text-gray-600">Last updated: {{ user.updated_at.strftime('%Y-%m-%d %H:%M') if user.updated_at else '' }}</p>
+      </div>
+      <div class="ml-auto">
+        <a href="{{ url_for('profile_edit') }}" class="px-4 py-2 bg-indigo-50 text-indigo-700 rounded">Edit Profile</a>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-6">
+      <h4 class="font-semibold text-lg">Emergency QR & Link</h4>
+      <div class="mt-4 flex flex-col md:flex-row items-center">
+        <div class="p-4 bg-gray-50 rounded mr-6">
+          <img src="data:image/png;base64,{{ qr_base64 }}" alt="QR code" class="w-40 h-40"/>
+        </div>
+        <div class="flex-1">
+          <p class="text-sm text-gray-600">Public emergency link (share or print on card/watch):</p>
+          <div class="mt-2 flex items-center space-x-2">
+            <input readonly value="{{ public_url }}" class="p-2 border rounded w-full text-sm">
+            <a href="{{ public_url }}" target="_blank" class="px-3 py-2 bg-indigo-600 text-white rounded">Open</a>
+          </div>
+          <p class="mt-3 text-xs text-gray-500">Only emergency fields are visible on this link.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-6">
+      <h4 class="font-semibold">Medical Reports</h4>
+      <form action="{{ url_for('upload_pdf') }}" method="post" enctype="multipart/form-data" class="mt-4 flex items-center space-x-3">
+        <input type="file" name="pdf" accept="application/pdf" class="block">
+        <button class="px-4 py-2 bg-indigo-600 text-white rounded">Upload</button>
+      </form>
+      <div class="mt-4">
+        <ul class="space-y-2">
+          {% for f in user.pdf_files %}
+            <li class="flex items-center justify-between p-3 border rounded">
+              <div class="text-sm">{{ f.filename }}</div>
+              <a href="{{ url_for('uploaded_file', filename=f.filename) }}" class="text-indigo-600 text-sm">Download</a>
+            </li>
+          {% else %}
+            <li class="text-sm text-gray-500">No reports uploaded.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-6">
+      <h4 class="font-semibold">Recent Access Logs</h4>
+      <div class="mt-3">
+        <ul class="text-sm text-gray-700 space-y-2">
+          {% for l in logs %}
+            <li class="flex justify-between items-center">
+              <div>{{ l.viewed_at.strftime('%Y-%m-%d %H:%M') }} — {{ l.ip }}</div>
+              <div class="text-xs text-gray-500">{{ l.user_agent[:40] }}...</div>
+            </li>
+          {% else %}
+            <li class="text-gray-500">No access logs yet.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="space-y-6">
+    <div class="bg-white rounded-xl shadow p-6">
+      <h4 class="font-semibold">Quick Health Summary</h4>
+      <div class="mt-3 text-gray-700">
+        <div class="py-2"><strong>Blood Group:</strong> {{ user.medical_data.get('blood_group', 'N/A') }}</div>
+        <div class="py-2"><strong>Allergies:</strong>
+          {% if user.medical_data.get('allergies') %}
+            <span class="text-red-600">{{ user.medical_data.get('allergies') | join(', ') }}</span>
+          {% else %}
+            N/A
+          {% endif %}
+        </div>
+        <div class="py-2"><strong>Medications:</strong> {{ user.medical_data.get('medications') | join(', ') if user.medical_data.get('medications') else 'N/A' }}</div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-6">
+      <h4 class="font-semibold">Emergency Contacts</h4>
+      <ul class="mt-3 space-y-2">
+        {% for c in user.medical_data.get('emergency_contacts', []) %}
+          <li class="flex justify-between items-center">
+            <div>
+              <div class="font-medium">{{ c.name }}</div>
+              <div class="text-xs text-gray-500">{{ c.phone }}</div>
+            </div>
+            <a href="tel:{{ c.phone }}" class="px-3 py-2 bg-indigo-50 text-indigo-700 rounded">Call</a>
+          </li>
+        {% else %}
+          <li class="text-gray-500">No emergency contacts added.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-6 text-center">
+      <h4 class="font-semibold">Need help?</h4>
+      <p class="text-sm text-gray-500 mt-2">Contact support at <a href="mailto:support@nfcure.com" class="text-indigo-600">support@nfcure.com</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

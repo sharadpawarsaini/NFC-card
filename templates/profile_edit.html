@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow">
+  <h3 class="text-xl font-semibold">Edit Emergency Profile</h3>
+  <form method="post" class="mt-4 space-y-4">
+    
+    <div>
+      <label class="text-sm">Blood group</label>
+      <input name="blood_group" 
+             value="{{ user.medical_data.get('blood_group', '') }}" 
+             class="w-full mt-1 p-3 border rounded">
+    </div>
+
+    <div>
+      <label class="text-sm">Allergies (comma separated)</label>
+      <input name="allergies" 
+             value="{{ (user.medical_data.get('allergies') or []) | join(', ') }}" 
+             class="w-full mt-1 p-3 border rounded">
+    </div>
+
+    <div>
+      <label class="text-sm">Chronic conditions (comma separated)</label>
+      <input name="conditions" 
+             value="{{ (user.medical_data.get('conditions') or []) | join(', ') }}" 
+             class="w-full mt-1 p-3 border rounded">
+    </div>
+
+    <div>
+      <label class="text-sm">Medications (comma separated)</label>
+      <input name="medications" 
+             value="{{ (user.medical_data.get('medications') or []) | join(', ') }}" 
+             class="w-full mt-1 p-3 border rounded">
+    </div>
+
+    <div>
+      <label class="text-sm">Surgeries (comma separated)</label>
+      <input name="surgeries" 
+             value="{{ (user.medical_data.get('surgeries') or []) | join(', ') }}" 
+             class="w-full mt-1 p-3 border rounded">
+    </div>
+
+    <h4 class="text-md font-semibold mt-4">Emergency Contacts</h4>
+
+    {% set contacts = user.medical_data.get('emergency_contacts', []) %}
+
+    {% for i in range(1,6) %}
+      {% set contact = contacts[i-1] if contacts|length >= i else {} %}
+      <div class="grid grid-cols-2 gap-4">
+        <input name="contact_{{i}}_name"
+               placeholder="Name"
+               value="{{ contact.get('name','') }}"
+               class="mt-2 p-3 border rounded">
+
+        <input name="contact_{{i}}_phone"
+               placeholder="Phone"
+               value="{{ contact.get('phone','') }}"
+               class="mt-2 p-3 border rounded">
+      </div>
+    {% endfor %}
+
+    <div class="flex justify-end">
+      <button class="px-6 py-2 bg-indigo-600 text-white rounded">Save</button>
+    </div>
+
+  </form>
+</div>
+{% endblock %}

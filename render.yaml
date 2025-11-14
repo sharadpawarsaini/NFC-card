@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: nfcure
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:app"
+    plan: free
+    envVars:
+      - key: MONGO_URI
+        value: "mongodb+srv://nfcure:NFC123@cluster0.nhdsx2a.mongodb.net/nfcureDB?appName=Cluster0&retryWrites=true&w=majority"
+      - key: SECRET_KEY
+        value: "467894658605fghdfgdfgdfgdfgdfgdfgdfgdfg"
+    sourceDir: "."
+    buildDir: "."
+    ports:
+      - port: 8000
+        protocol: HTTP
+        exposeAs: "nfcure-app"
+    domains:
+      - name: "nfcure.example.com"
+    automaticDeployments: true
+    gitRepo:
+      repoUrl: "
